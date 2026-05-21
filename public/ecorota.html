@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoRota - Monitore a coleta de lixo da sua região em tempo real</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        // IMPORTANTE: Substitua pelos seus dados do EmailJS
+        // 1. Crie uma conta em https://www.emailjs.com/
+        // 2. Crie um Email Service (Gmail, Outlook, etc)
+        // 3. Crie um Email Template com as variaveis: {{to_name}}, {{to_email}}, {{verification_code}}
+        // 4. Copie seu Public Key, Service ID e Template ID abaixo
+        
+        const EMAILJS_PUBLIC_KEY = 'SUA_PUBLIC_KEY_AQUI'; // Sua Public Key do EmailJS
+        const EMAILJS_SERVICE_ID = 'SEU_SERVICE_ID_AQUI'; // ID do seu Email Service
+        const EMAILJS_TEMPLATE_ID = 'SEU_TEMPLATE_ID_AQUI'; // ID do seu Email Template
+        
+        (function() {
+            emailjs.init(EMAILJS_PUBLIC_KEY);
+        })();
+    </script>
     <style>
         * {
             margin: 0;
@@ -1752,17 +1769,45 @@
             // Generate and "send" verification code
             verificationCode = generateVerificationCode();
             
-            // In a real app, this would send an email. Here we show in console and alert
-            console.log('[EcoRota] Codigo de verificacao para ' + email + ': ' + verificationCode);
+            // Send email via EmailJS
+            sendVerificationEmail(pendingRegistration.name, email, verificationCode);
             
             // Show verification step
             document.getElementById('registerForm').style.display = 'none';
             document.getElementById('verifyForm').style.display = 'block';
             document.getElementById('verifyEmailDisplay').textContent = email;
             document.getElementById('verificationCode').value = '';
-            
-            // Show the code to user (simulating email)
-            showAlert('registerSuccess', 'Codigo enviado! Para teste, use: ' + verificationCode);
+        }
+
+        // Send verification email using EmailJS
+        async function sendVerificationEmail(name, email, code) {
+            // Check if EmailJS is configured
+            if (EMAILJS_PUBLIC_KEY === 'SUA_PUBLIC_KEY_AQUI') {
+                // EmailJS not configured - show code in UI for testing
+                console.log('[EcoRota] EmailJS nao configurado. Codigo de verificacao: ' + code);
+                showAlert('registerSuccess', 'Modo teste - Seu codigo: ' + code + ' (Configure o EmailJS para enviar por email)');
+                return;
+            }
+
+            try {
+                showAlert('registerSuccess', 'Enviando codigo para ' + email + '...');
+                
+                const templateParams = {
+                    to_name: name,
+                    to_email: email,
+                    verification_code: code
+                };
+
+                await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+                
+                showAlert('registerSuccess', 'Codigo enviado para ' + email + '! Verifique sua caixa de entrada.');
+                console.log('[EcoRota] Email enviado com sucesso para: ' + email);
+            } catch (error) {
+                console.error('[EcoRota] Erro ao enviar email:', error);
+                // Fallback: show code in UI
+                showAlert('registerError', 'Erro ao enviar email. Seu codigo: ' + code);
+            }
+        }
         }
 
         // Step 2: Verify code and complete registration
@@ -1823,8 +1868,7 @@
         function resendCode() {
             hideAlerts();
             verificationCode = generateVerificationCode();
-            console.log('[EcoRota] Novo codigo de verificacao: ' + verificationCode);
-            showAlert('registerSuccess', 'Novo codigo enviado! Para teste, use: ' + verificationCode);
+            sendVerificationEmail(pendingRegistration.name, pendingRegistration.email, verificationCode);
         }
 
         // Go back to registration form
