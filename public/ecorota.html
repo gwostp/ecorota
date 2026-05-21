@@ -795,6 +795,27 @@
             color: var(--green-accent);
         }
 
+        .btn-export {
+            margin-top: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--green-accent);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-export:hover {
+            background: var(--green-primary);
+            transform: translateY(-2px);
+        }
+
         .footer-bottom {
             border-top: 1px solid #374151;
             padding-top: 25px;
@@ -1223,6 +1244,10 @@
                     <input type="text" id="registerName" placeholder="Seu nome" required>
                 </div>
                 <div class="form-group">
+                    <label for="registerPhone">Telefone</label>
+                    <input type="tel" id="registerPhone" placeholder="(11) 99999-9999" required>
+                </div>
+                <div class="form-group">
                     <label for="registerEmail">E-mail</label>
                     <input type="email" id="registerEmail" placeholder="seu@email.com" required>
                 </div>
@@ -1518,6 +1543,14 @@
                         <li><a href="#">contato@ecorota.com</a></li>
                         <li><a href="#">Sao Paulo, SP</a></li>
                     </ul>
+                    <button class="btn-export" onclick="exportToCSV()" title="Exportar cadastros para CSV">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Exportar CSV
+                    </button>
                 </div>
             </div>
 
@@ -1620,6 +1653,7 @@
             hideAlerts();
 
             const name = document.getElementById('registerName').value.trim();
+            const phone = document.getElementById('registerPhone').value.trim();
             const email = document.getElementById('registerEmail').value.trim().toLowerCase();
             const password = document.getElementById('registerPassword').value;
             const confirmPassword = document.getElementById('registerConfirmPassword').value;
@@ -1635,6 +1669,11 @@
                 return;
             }
 
+            if (phone.length < 10) {
+                showAlert('registerError', 'Digite um telefone valido!');
+                return;
+            }
+
             // Check if email already exists
             const users = getUsers();
             if (users.find(u => u.email === email)) {
@@ -1646,6 +1685,7 @@
             const newUser = {
                 id: Date.now(),
                 name: name,
+                phone: phone,
                 email: email,
                 password: password,
                 points: 100, // Starting points
@@ -1757,6 +1797,60 @@
         }
 
         // ==================== GENERAL FUNCTIONS ====================
+
+        // Export users to CSV
+        function exportToCSV() {
+            const users = getUsers();
+            
+            if (users.length === 0) {
+                alert('Nenhum cadastro encontrado para exportar!');
+                return;
+            }
+
+            // CSV header
+            const headers = ['ID', 'Nome', 'Telefone', 'Email', 'Pontos', 'Nivel', 'Data de Cadastro'];
+            
+            // CSV rows
+            const rows = users.map(user => [
+                user.id,
+                user.name,
+                user.phone || 'N/A',
+                user.email,
+                user.points,
+                user.level,
+                new Date(user.createdAt).toLocaleString('pt-BR')
+            ]);
+
+            // Build CSV content
+            let csvContent = headers.join(';') + '\n';
+            rows.forEach(row => {
+                csvContent += row.map(field => {
+                    // Escape fields that contain semicolon, newline or quotes
+                    let str = String(field);
+                    if (str.includes(';') || str.includes('\n') || str.includes('"')) {
+                        str = '"' + str.replace(/"/g, '""') + '"';
+                    }
+                    return str;
+                }).join(';') + '\n';
+            });
+
+            // Add BOM for Excel compatibility with special characters
+            const BOM = '\uFEFF';
+            const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+            
+            // Create download link
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'ecorota_cadastros_' + new Date().toISOString().split('T')[0] + '.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            alert('Arquivo CSV exportado com sucesso! Total de ' + users.length + ' cadastro(s).');
+        }
 
         // Mobile Menu Toggle
         function toggleMenu() {
