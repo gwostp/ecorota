@@ -1,12 +1,5 @@
+import { EcorotaLanding } from '@/components/ecorota-landing'
+
 export default function Home() {
-  return (
-    <iframe
-      src="/ecorota.html"
-      style={{
-        width: "100%",
-        height: "100vh",
-        border: "none",
-      }}
-    />
-  )
+  return <EcorotaLanding />
 }
