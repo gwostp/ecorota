@@ -1002,6 +1002,43 @@
             justify-content: center;
         }
 
+        .btn-link {
+            background: none;
+            border: none;
+            color: var(--green-primary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            text-decoration: underline;
+            width: 100%;
+            text-align: center;
+            display: block;
+        }
+
+        .btn-link:hover {
+            color: var(--green-accent);
+        }
+
+        .verification-info {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .verification-icon {
+            color: var(--green-primary);
+            margin-bottom: 15px;
+        }
+
+        .verification-info p {
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .verification-info strong {
+            color: var(--green-primary);
+            font-size: 1.1rem;
+        }
+
         .alert {
             padding: 12px 15px;
             border-radius: 10px;
@@ -1238,7 +1275,9 @@
             </div>
             <div class="alert alert-success" id="registerSuccess"></div>
             <div class="alert alert-error" id="registerError"></div>
-            <form id="registerForm" onsubmit="handleRegister(event)">
+            
+            <!-- Step 1: Registration Form -->
+            <form id="registerForm" onsubmit="handleRegisterStep1(event)">
                 <div class="form-group">
                     <label for="registerName">Nome completo</label>
                     <input type="text" id="registerName" placeholder="Seu nome" required>
@@ -1255,11 +1294,28 @@
                     <label for="registerPassword">Senha</label>
                     <input type="password" id="registerPassword" placeholder="Minimo 6 caracteres" required minlength="6">
                 </div>
-                <div class="form-group">
-                    <label for="registerConfirmPassword">Confirmar senha</label>
-                    <input type="password" id="registerConfirmPassword" placeholder="Repita a senha" required>
+                <button type="submit" class="btn btn-primary btn-full">Enviar codigo de verificacao</button>
+            </form>
+            
+            <!-- Step 2: Verification Code -->
+            <form id="verifyForm" style="display: none;" onsubmit="handleVerifyCode(event)">
+                <div class="verification-info">
+                    <div class="verification-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="48" height="48">
+                            <rect x="2" y="4" width="20" height="16" rx="2"/>
+                            <path d="M22 7l-10 7L2 7"/>
+                        </svg>
+                    </div>
+                    <p>Enviamos um codigo de 6 digitos para:</p>
+                    <strong id="verifyEmailDisplay"></strong>
                 </div>
-                <button type="submit" class="btn btn-primary btn-full">Cadastrar</button>
+                <div class="form-group">
+                    <label for="verificationCode">Codigo de verificacao</label>
+                    <input type="text" id="verificationCode" placeholder="000000" maxlength="6" required pattern="[0-9]{6}" style="text-align: center; font-size: 1.5rem; letter-spacing: 8px;">
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Verificar e criar conta</button>
+                <button type="button" class="btn btn-outline btn-full" style="margin-top: 10px;" onclick="resendCode()">Reenviar codigo</button>
+                <button type="button" class="btn-link" onclick="backToRegister()">Voltar e editar dados</button>
             </form>
             <div class="modal-footer">
                 <p>Ja tem uma conta? <a href="#" onclick="switchModal('login')">Entrar</a></p>
@@ -1648,7 +1704,17 @@
         }
 
         // Handle registration
-        function handleRegister(e) {
+        // Temporary storage for registration data
+        let pendingRegistration = null;
+        let verificationCode = null;
+
+        // Generate 6-digit verification code
+        function generateVerificationCode() {
+            return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+
+        // Step 1: Validate data and send verification code
+        function handleRegisterStep1(e) {
             e.preventDefault();
             hideAlerts();
 
@@ -1656,14 +1722,8 @@
             const phone = document.getElementById('registerPhone').value.trim();
             const email = document.getElementById('registerEmail').value.trim().toLowerCase();
             const password = document.getElementById('registerPassword').value;
-            const confirmPassword = document.getElementById('registerConfirmPassword').value;
 
             // Validation
-            if (password !== confirmPassword) {
-                showAlert('registerError', 'As senhas nao coincidem!');
-                return;
-            }
-
             if (password.length < 6) {
                 showAlert('registerError', 'A senha deve ter pelo menos 6 caracteres!');
                 return;
@@ -1681,18 +1741,56 @@
                 return;
             }
 
-            // Create new user
-            const newUser = {
-                id: Date.now(),
+            // Store pending registration data
+            pendingRegistration = {
                 name: name,
                 phone: phone,
                 email: email,
-                password: password,
-                points: 100, // Starting points
-                level: 'Eco Iniciante',
-                createdAt: new Date().toISOString()
+                password: password
             };
 
+            // Generate and "send" verification code
+            verificationCode = generateVerificationCode();
+            
+            // In a real app, this would send an email. Here we show in console and alert
+            console.log('[EcoRota] Codigo de verificacao para ' + email + ': ' + verificationCode);
+            
+            // Show verification step
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('verifyForm').style.display = 'block';
+            document.getElementById('verifyEmailDisplay').textContent = email;
+            document.getElementById('verificationCode').value = '';
+            
+            // Show the code to user (simulating email)
+            showAlert('registerSuccess', 'Codigo enviado! Para teste, use: ' + verificationCode);
+        }
+
+        // Step 2: Verify code and complete registration
+        function handleVerifyCode(e) {
+            e.preventDefault();
+            hideAlerts();
+
+            const enteredCode = document.getElementById('verificationCode').value.trim();
+
+            if (enteredCode !== verificationCode) {
+                showAlert('registerError', 'Codigo incorreto! Tente novamente.');
+                return;
+            }
+
+            // Create new user
+            const newUser = {
+                id: Date.now(),
+                name: pendingRegistration.name,
+                phone: pendingRegistration.phone,
+                email: pendingRegistration.email,
+                password: pendingRegistration.password,
+                points: 100, // Starting points
+                level: 'Eco Iniciante',
+                createdAt: new Date().toISOString(),
+                verified: true
+            };
+
+            const users = getUsers();
             users.push(newUser);
             saveUsers(users);
 
@@ -1702,15 +1800,38 @@
             ranking.sort((a, b) => b.points - a.points);
             localStorage.setItem('ecorota_ranking', JSON.stringify(ranking));
 
-            showAlert('registerSuccess', 'Conta criada com sucesso! Voce ganhou 100 pontos de boas-vindas!');
+            showAlert('registerSuccess', 'Conta verificada e criada com sucesso! Voce ganhou 100 pontos de boas-vindas!');
             
+            // Clear pending data
+            pendingRegistration = null;
+            verificationCode = null;
+
             setTimeout(() => {
                 closeModal('register');
+                // Reset to step 1 for next registration
+                document.getElementById('registerForm').style.display = 'block';
+                document.getElementById('verifyForm').style.display = 'none';
+                document.getElementById('registerForm').reset();
                 // Auto login
                 setCurrentUser(newUser);
                 updateUIForLoggedInUser(newUser);
                 updateRanking();
             }, 1500);
+        }
+
+        // Resend verification code
+        function resendCode() {
+            hideAlerts();
+            verificationCode = generateVerificationCode();
+            console.log('[EcoRota] Novo codigo de verificacao: ' + verificationCode);
+            showAlert('registerSuccess', 'Novo codigo enviado! Para teste, use: ' + verificationCode);
+        }
+
+        // Go back to registration form
+        function backToRegister() {
+            hideAlerts();
+            document.getElementById('registerForm').style.display = 'block';
+            document.getElementById('verifyForm').style.display = 'none';
         }
 
         // Handle login
