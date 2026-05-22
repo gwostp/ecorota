@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { COLLECTION_SCHEDULE, WASTE_TYPES } from '@/lib/ecorota/content'
+import { WhatsAppAdminTest } from '@/components/whatsapp-admin-test'
 
 export type DashboardUser = {
   id: string
@@ -29,7 +30,12 @@ export type DashboardUser = {
   name?: string
 }
 
-export function UserDashboard({ user }: { user: DashboardUser }) {
+type UserDashboardProps = {
+  user: DashboardUser
+  isWhatsAppAdmin?: boolean
+}
+
+export function UserDashboard({ user, isWhatsAppAdmin }: UserDashboardProps) {
   const router = useRouter()
   const supabase = useMemo(() => createClient(), [])
   const [checklist, setChecklist] = useState({
@@ -174,7 +180,13 @@ export function UserDashboard({ user }: { user: DashboardUser }) {
           </Card>
         </div>
 
-        <Card className="border-emerald-100">
+        {isWhatsAppAdmin && (
+          <div className="lg:col-span-2">
+            <WhatsAppAdminTest />
+          </div>
+        )}
+
+        <Card className="border-emerald-100 lg:col-span-2">
           <CardHeader>
             <CardTitle className="text-emerald-950">Tipos de resíduo</CardTitle>
             <CardDescription>

@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/coleta",
+      "schedule": "0 11 * * 4,6"
+    }
+  ]
+}

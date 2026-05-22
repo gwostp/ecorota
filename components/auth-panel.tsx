@@ -32,6 +32,7 @@ export function AuthPanel({ defaultTab = 'login', onAuthSuccess }: AuthPanelProp
   const [loginEmail, setLoginEmail] = useState('')
   const [loginPassword, setLoginPassword] = useState('')
   const [signupName, setSignupName] = useState('')
+  const [signupPhone, setSignupPhone] = useState('')
   const [signupEmail, setSignupEmail] = useState('')
   const [signupPassword, setSignupPassword] = useState('')
 
@@ -74,6 +75,7 @@ export function AuthPanel({ defaultTab = 'login', onAuthSuccess }: AuthPanelProp
         emailRedirectTo: `${window.location.origin}/auth/callback?next=/painel`,
         data: {
           full_name: signupName.trim() || undefined,
+          phone: signupPhone.trim() || undefined,
           city: 'Joinville',
         },
       },
@@ -84,6 +86,18 @@ export function AuthPanel({ defaultTab = 'login', onAuthSuccess }: AuthPanelProp
     if (authError) {
       setError(authError.message)
       return
+    }
+
+    if (signupPhone.trim()) {
+      await fetch('/api/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          phone: signupPhone.trim(),
+          full_name: signupName.trim(),
+        }),
+      })
     }
 
     setMessage(
@@ -175,6 +189,20 @@ export function AuthPanel({ defaultTab = 'login', onAuthSuccess }: AuthPanelProp
                   onChange={(e) => setSignupName(e.target.value)}
                   placeholder="Seu nome"
                 />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="signup-phone">WhatsApp / telefone</Label>
+                <Input
+                  id="signup-phone"
+                  type="tel"
+                  autoComplete="tel"
+                  value={signupPhone}
+                  onChange={(e) => setSignupPhone(e.target.value)}
+                  placeholder="47999999999"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Usado para lembretes de coleta (quinta e sábado).
+                </p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="signup-email">E-mail</Label>

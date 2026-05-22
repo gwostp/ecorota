@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { UserDashboard, type DashboardUser } from '@/components/user-dashboard'
+import { isWhatsAppAdmin } from '@/lib/whatsapp/config'
 
 export default async function PainelPage() {
   const supabase = await createClient()
@@ -21,5 +22,10 @@ export default async function PainelPage() {
         : undefined,
   }
 
-  return <UserDashboard user={dashboardUser} />
+  return (
+    <UserDashboard
+      user={dashboardUser}
+      isWhatsAppAdmin={isWhatsAppAdmin(user.email)}
+    />
+  )
 }
