@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { normalizeWhatsAppPhone } from '@/lib/whatsapp/phone'
 
 /**
- * Salva/atualiza telefone do morador em public.profiles (após cadastro).
+ * Salva/atualiza nome do morador em public.profiles (após cadastro).
  */
 export async function POST(request: Request) {
   const supabase = await createClient()
@@ -15,14 +14,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: 'Não autenticado' }, { status: 401 })
   }
 
-  let body: { phone?: string; full_name?: string } = {}
+  let body: { full_name?: string } = {}
   try {
     body = await request.json()
   } catch {
     return NextResponse.json({ ok: false, error: 'JSON inválido' }, { status: 400 })
   }
 
-  const phone = body.phone ? normalizeWhatsAppPhone(body.phone) : null
   const full_name =
     body.full_name?.trim() ||
     (typeof user.user_metadata?.full_name === 'string'
@@ -32,7 +30,6 @@ export async function POST(request: Request) {
   const { error } = await supabase.from('profiles').upsert(
     {
       id: user.id,
-      phone: phone || null,
       full_name,
       updated_at: new Date().toISOString(),
     },
@@ -40,11 +37,8 @@ export async function POST(request: Request) {
   )
 
   if (error) {
-    return NextResponse.json(
-      { ok: false, error: error.message },
-      { status: 500 },
-    )
+    return NextResponse.json({ ok: false, error: error.message }, { status: 500 })
   }
 
-  return NextResponse.json({ ok: true, phone, full_name })
+  return NextResponse.json({ ok: true, full_name })
 }

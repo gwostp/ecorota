@@ -21,39 +21,49 @@ export function SiteHeader({ userEmail, onLogout }: SiteHeaderProps) {
   ]
 
   return (
-    <header className="sticky top-0 z-50 border-b border-emerald-100/80 bg-white/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-        <Link href="/" className="flex items-center gap-2.5">
-          <span className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-green-700 text-white shadow-md shadow-emerald-500/25">
-            <Recycle className="size-5" />
+    <header className="sticky top-0 z-50 border-b border-emerald-100/60 bg-white/95 backdrop-blur-xl">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5 sm:px-8">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-3 group">
+          <span className="flex size-9 items-center justify-center rounded-xl bg-emerald-700 text-white shadow-md shadow-emerald-700/30 transition group-hover:bg-emerald-600">
+            <Recycle className="size-4.5" />
           </span>
           <div>
-            <p className="text-lg font-bold tracking-tight text-emerald-950">
+            <p className="font-display text-[1.05rem] font-normal leading-none text-emerald-950 tracking-tight">
               {SITE.name}
             </p>
-            <p className="text-xs text-emerald-700">{SITE.tagline}</p>
+            <p className="text-[0.65rem] text-emerald-600 tracking-wide uppercase font-medium mt-0.5">
+              Joinville · SC
+            </p>
           </div>
         </Link>
 
-        <nav className="hidden items-center gap-6 md:flex">
+        {/* Nav desktop */}
+        <nav className="hidden items-center gap-1 md:flex">
           {links.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-emerald-900/80 transition hover:text-emerald-700"
+              className="rounded-lg px-3 py-2 text-sm font-medium text-emerald-900/70 transition hover:bg-emerald-50 hover:text-emerald-800"
             >
               {link.label}
             </a>
           ))}
+          <div className="mx-3 h-5 w-px bg-emerald-100" />
           {userEmail ? (
             <>
               <Link
                 href="/painel"
-                className="text-sm font-medium text-emerald-700 hover:underline"
+                className="rounded-lg px-3 py-2 text-sm font-medium text-emerald-700 transition hover:bg-emerald-50"
               >
                 Painel
               </Link>
-              <Button variant="outline" size="sm" onClick={onLogout}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onLogout}
+                className="border-emerald-200 text-emerald-800 hover:bg-emerald-50 hover:border-emerald-300"
+              >
                 Sair
               </Button>
             </>
@@ -61,74 +71,59 @@ export function SiteHeader({ userEmail, onLogout }: SiteHeaderProps) {
             <Button
               asChild
               size="sm"
-              className="bg-emerald-600 hover:bg-emerald-700"
+              className="bg-emerald-700 hover:bg-emerald-600 text-white shadow-sm shadow-emerald-700/20 rounded-xl px-4"
             >
               <a href="#cadastro">Entrar</a>
             </Button>
           )}
         </nav>
 
+        {/* Hambúrguer mobile */}
         <button
           type="button"
-          className="inline-flex size-10 items-center justify-center rounded-lg border border-emerald-100 md:hidden"
+          className="inline-flex size-9 items-center justify-center rounded-xl border border-emerald-100 bg-white text-emerald-800 transition hover:bg-emerald-50 md:hidden"
           onClick={() => setOpen((v) => !v)}
           aria-label="Menu"
         >
-          {open ? <X className="size-5" /> : <Menu className="size-5" />}
+          {open ? <X className="size-4" /> : <Menu className="size-4" />}
         </button>
       </div>
 
+      {/* Menu mobile */}
       {open && (
-        <nav className="border-t border-emerald-100 px-4 py-4 md:hidden">
-          <ul className="flex flex-col gap-3">
+        <nav className="animate-fade-in border-t border-emerald-100 bg-white px-5 pb-5 pt-4 md:hidden">
+          <ul className="flex flex-col gap-1">
             {links.map((link) => (
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="block text-sm font-medium text-emerald-900"
+                  className="block rounded-xl px-4 py-3 text-sm font-medium text-emerald-900 transition hover:bg-emerald-50"
                   onClick={() => setOpen(false)}
                 >
                   {link.label}
                 </a>
               </li>
             ))}
-            {userEmail ? (
-              <>
-                <li>
+            <li className="mt-2 border-t border-emerald-50 pt-3">
+              {userEmail ? (
+                <div className="flex flex-col gap-2">
                   <Link
                     href="/painel"
-                    className="text-sm font-medium text-emerald-700"
+                    className="rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 text-center"
                     onClick={() => setOpen(false)}
                   >
                     Painel
                   </Link>
-                </li>
-                <li>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full"
-                    onClick={() => {
-                      onLogout?.()
-                      setOpen(false)
-                    }}
-                  >
+                  <Button variant="outline" size="sm" className="w-full" onClick={() => { onLogout?.(); setOpen(false) }}>
                     Sair
                   </Button>
-                </li>
-              </>
-            ) : (
-              <li>
-                <Button
-                  asChild
-                  className="w-full bg-emerald-600 hover:bg-emerald-700"
-                >
-                  <a href="#cadastro" onClick={() => setOpen(false)}>
-                    Entrar
-                  </a>
+                </div>
+              ) : (
+                <Button asChild className="w-full bg-emerald-700 hover:bg-emerald-600">
+                  <a href="#cadastro" onClick={() => setOpen(false)}>Entrar</a>
                 </Button>
-              </li>
-            )}
+              )}
+            </li>
           </ul>
         </nav>
       )}
