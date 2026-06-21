@@ -8,6 +8,7 @@ import {
   MessageCircle, Recycle, Trash2, User,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { EcoRotaLogo } from '@/components/ecorota-logo'
 import { Button } from '@/components/ui/button'
 import {
   Card, CardContent, CardDescription, CardHeader, CardTitle,
@@ -82,16 +83,12 @@ export function UserDashboard({ user }: UserDashboardProps) {
       {/* Header */}
       <header className="border-b border-emerald-100 bg-white/90 backdrop-blur sticky top-0 z-40">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6">
-          <div className="flex items-center gap-2">
-            <span className="flex size-9 items-center justify-center rounded-lg bg-emerald-600 text-white">
-              <Recycle className="size-4" />
-            </span>
-            <div>
-              <p className="font-semibold text-emerald-950">Painel do morador</p>
-              <p className="text-xs text-muted-foreground">
-                {localUser.bairro ? localUser.bairro : 'Joinville · SC'}
-              </p>
-            </div>
+          <div className="flex items-center gap-3">
+            <EcoRotaLogo size="sm" />
+            <div className="hidden sm:block h-5 w-px" style={{ background: '#c2e0a2' }} />
+            <p className="hidden sm:block text-xs" style={{ color: '#4a7a4a' }}>
+              {localUser.bairro ? localUser.bairro : 'Joinville · SC'}
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <Button

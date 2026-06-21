@@ -1,9 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { Menu, Recycle, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { EcoRotaLogo } from '@/components/ecorota-logo'
 import { SITE } from '@/lib/ecorota/content'
 
 type SiteHeaderProps = {
@@ -21,21 +22,10 @@ export function SiteHeader({ userEmail, onLogout }: SiteHeaderProps) {
   ]
 
   return (
-    <header className="sticky top-0 z-50 border-b border-emerald-100/60 bg-white/95 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5 sm:px-8">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <span className="flex size-9 items-center justify-center rounded-xl bg-emerald-700 text-white shadow-md shadow-emerald-700/30 transition group-hover:bg-emerald-600">
-            <Recycle className="size-4.5" />
-          </span>
-          <div>
-            <p className="font-display text-[1.05rem] font-normal leading-none text-emerald-950 tracking-tight">
-              {SITE.name}
-            </p>
-            <p className="text-[0.65rem] text-emerald-600 tracking-wide uppercase font-medium mt-0.5">
-              Joinville · SC
-            </p>
-          </div>
+    <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur-xl" style={{ borderColor: '#c2e0a2' }}>
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 sm:px-8">
+        <Link href="/" className="flex items-center group">
+          <EcoRotaLogo size="sm" />
         </Link>
 
         {/* Nav desktop */}
@@ -44,17 +34,19 @@ export function SiteHeader({ userEmail, onLogout }: SiteHeaderProps) {
             <a
               key={link.href}
               href={link.href}
-              className="rounded-lg px-3 py-2 text-sm font-medium text-emerald-900/70 transition hover:bg-emerald-50 hover:text-emerald-800"
+              className="rounded-lg px-3 py-2 text-sm font-medium transition hover:bg-green-50"
+              style={{ color: '#2d6a2d' }}
             >
               {link.label}
             </a>
           ))}
-          <div className="mx-3 h-5 w-px bg-emerald-100" />
+          <div className="mx-3 h-5 w-px" style={{ background: '#c2e0a2' }} />
           {userEmail ? (
             <>
               <Link
                 href="/painel"
-                className="rounded-lg px-3 py-2 text-sm font-medium text-emerald-700 transition hover:bg-emerald-50"
+                className="rounded-lg px-3 py-2 text-sm font-medium transition hover:bg-green-50"
+                style={{ color: '#3d8c3d' }}
               >
                 Painel
               </Link>
@@ -62,7 +54,8 @@ export function SiteHeader({ userEmail, onLogout }: SiteHeaderProps) {
                 variant="outline"
                 size="sm"
                 onClick={onLogout}
-                className="border-emerald-200 text-emerald-800 hover:bg-emerald-50 hover:border-emerald-300"
+                className="rounded-xl"
+                style={{ borderColor: '#c2e0a2', color: '#2d6a2d' }}
               >
                 Sair
               </Button>
@@ -71,7 +64,8 @@ export function SiteHeader({ userEmail, onLogout }: SiteHeaderProps) {
             <Button
               asChild
               size="sm"
-              className="bg-emerald-700 hover:bg-emerald-600 text-white shadow-sm shadow-emerald-700/20 rounded-xl px-4"
+              className="rounded-xl px-4 text-white shadow-sm"
+              style={{ background: '#2d6a2d' }}
             >
               <a href="#cadastro">Entrar</a>
             </Button>
@@ -81,7 +75,8 @@ export function SiteHeader({ userEmail, onLogout }: SiteHeaderProps) {
         {/* Hambúrguer mobile */}
         <button
           type="button"
-          className="inline-flex size-9 items-center justify-center rounded-xl border border-emerald-100 bg-white text-emerald-800 transition hover:bg-emerald-50 md:hidden"
+          className="inline-flex size-9 items-center justify-center rounded-xl border bg-white transition hover:bg-green-50 md:hidden"
+          style={{ borderColor: '#c2e0a2', color: '#2d6a2d' }}
           onClick={() => setOpen((v) => !v)}
           aria-label="Menu"
         >
@@ -91,35 +86,30 @@ export function SiteHeader({ userEmail, onLogout }: SiteHeaderProps) {
 
       {/* Menu mobile */}
       {open && (
-        <nav className="animate-fade-in border-t border-emerald-100 bg-white px-5 pb-5 pt-4 md:hidden">
+        <nav className="animate-fade-in border-t bg-white px-5 pb-5 pt-4 md:hidden" style={{ borderColor: '#c2e0a2' }}>
           <ul className="flex flex-col gap-1">
             {links.map((link) => (
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="block rounded-xl px-4 py-3 text-sm font-medium text-emerald-900 transition hover:bg-emerald-50"
+                  className="block rounded-xl px-4 py-3 text-sm font-medium transition hover:bg-green-50"
+                  style={{ color: '#2d6a2d' }}
                   onClick={() => setOpen(false)}
                 >
                   {link.label}
                 </a>
               </li>
             ))}
-            <li className="mt-2 border-t border-emerald-50 pt-3">
+            <li className="mt-2 border-t pt-3" style={{ borderColor: '#d4edca' }}>
               {userEmail ? (
                 <div className="flex flex-col gap-2">
-                  <Link
-                    href="/painel"
-                    className="rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 text-center"
-                    onClick={() => setOpen(false)}
-                  >
+                  <Link href="/painel" className="rounded-xl px-4 py-3 text-sm font-medium text-center" style={{ background: '#eaf6e0', color: '#2d6a2d' }} onClick={() => setOpen(false)}>
                     Painel
                   </Link>
-                  <Button variant="outline" size="sm" className="w-full" onClick={() => { onLogout?.(); setOpen(false) }}>
-                    Sair
-                  </Button>
+                  <Button variant="outline" size="sm" className="w-full" onClick={() => { onLogout?.(); setOpen(false) }}>Sair</Button>
                 </div>
               ) : (
-                <Button asChild className="w-full bg-emerald-700 hover:bg-emerald-600">
+                <Button asChild className="w-full text-white" style={{ background: '#2d6a2d' }}>
                   <a href="#cadastro" onClick={() => setOpen(false)}>Entrar</a>
                 </Button>
               )}

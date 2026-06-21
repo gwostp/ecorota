@@ -6,53 +6,47 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Cores EcoRota */
-  --eco-green-950: #052e16;
-  --eco-green-900: #14532d;
-  --eco-green-800: #166534;
-  --eco-green-700: #15803d;
-  --eco-green-600: #16a34a;
-  --eco-green-500: #22c55e;
-  --eco-green-100: #dcfce7;
-  --eco-green-50:  #f0fdf4;
-  --eco-sand:      #faf7f2;
-  --eco-sand-100:  #f5f0e8;
-  --eco-sand-200:  #e8e0d0;
+  /* Paleta EcoRota — baseada na apresentação */
+  --eco-green-950: #0d2e0d;
+  --eco-green-900: #1a4a1a;
+  --eco-green-800: #245c24;
+  --eco-green-700: #2d6a2d;
+  --eco-green-600: #3d8c3d;
+  --eco-green-500: #4aaa4a;
+  --eco-green-400: #6aaa3a;   /* verde claro "Eco" do logo */
+  --eco-green-300: #8dc85a;
+  --eco-green-200: #b8e08a;
+  --eco-green-100: #d4edca;   /* fundo verde clarinho da apresentação */
+  --eco-green-50:  #eaf6e0;
 
   /* shadcn tokens */
-  --background: oklch(0.99 0.003 95);
-  --foreground: oklch(0.13 0.02 150);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.13 0.02 150);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.13 0.02 150);
-  --primary: oklch(0.45 0.15 150);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.96 0.01 120);
-  --secondary-foreground: oklch(0.25 0.05 150);
-  --muted: oklch(0.96 0.005 100);
-  --muted-foreground: oklch(0.52 0.02 150);
-  --accent: oklch(0.94 0.04 140);
-  --accent-foreground: oklch(0.25 0.08 150);
+  --background: #f0fae8;
+  --foreground: #0d2e0d;
+  --card: #ffffff;
+  --card-foreground: #0d2e0d;
+  --popover: #ffffff;
+  --popover-foreground: #0d2e0d;
+  --primary: #2d6a2d;
+  --primary-foreground: #ffffff;
+  --secondary: #d4edca;
+  --secondary-foreground: #1a4a1a;
+  --muted: #e4f4d4;
+  --muted-foreground: #4a7a4a;
+  --accent: #b8e08a;
+  --accent-foreground: #1a4a1a;
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.91 0.01 130);
-  --input: oklch(0.91 0.01 130);
-  --ring: oklch(0.45 0.15 150);
+  --destructive-foreground: #ffffff;
+  --border: #c2e0a2;
+  --input: #c2e0a2;
+  --ring: #3d8c3d;
   --radius: 0.75rem;
 
-  /* Fonte */
   --font-display: 'DM Serif Display', Georgia, serif;
   --font-body: 'DM Sans', system-ui, sans-serif;
 }
 
-* {
-  border-color: var(--border);
-}
-
-html {
-  scroll-behavior: smooth;
-}
+* { border-color: var(--border); }
+html { scroll-behavior: smooth; }
 
 body {
   background-color: var(--background);
@@ -62,21 +56,16 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.font-display {
-  font-family: var(--font-display);
-}
+.font-display { font-family: var(--font-display); }
 
-/* Animações suaves */
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-
 @keyframes pulse-dot {
   0%, 100% { opacity: 1; transform: scale(1); }
   50%       { opacity: 0.5; transform: scale(0.85); }
@@ -92,7 +81,6 @@ body {
 .delay-400 { animation-delay: 0.4s; }
 .delay-500 { animation-delay: 0.5s; }
 
-/* Scrollbar sutil */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #bbf7d0; border-radius: 99px; }
+::-webkit-scrollbar-thumb { background: #8dc85a; border-radius: 99px; }
