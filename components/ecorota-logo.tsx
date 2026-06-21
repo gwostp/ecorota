@@ -7,7 +7,7 @@ type LogoProps = {
 }
 
 export function EcoRotaLogo({ className, iconOnly = false, size = 'md' }: LogoProps) {
-  const scales = { sm: 0.6, md: 1, lg: 1.4 }
+  const scales = { sm: 0.85, md: 1.2, lg: 1.6 }
   const s = scales[size]
 
   return (
