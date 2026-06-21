@@ -15,11 +15,12 @@ type SiteHeaderProps = {
 export function SiteHeader({ userEmail, onLogout }: SiteHeaderProps) {
   const [open, setOpen] = useState(false)
 
-  const links = [
+  const allLinks = [
     { href: '#sobre', label: 'Projeto' },
     { href: '#coleta', label: 'Coleta' },
-    { href: '#cadastro', label: 'Cadastro' },
+    { href: '#cadastro', label: 'Cadastro', hideWhenLoggedIn: true },
   ]
+  const links = allLinks.filter(l => !(l.hideWhenLoggedIn && userEmail))
 
   return (
     <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur-xl" style={{ borderColor: '#c2e0a2' }}>
