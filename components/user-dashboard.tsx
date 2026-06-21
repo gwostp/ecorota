@@ -15,6 +15,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { COLLECTION_SCHEDULE, WASTE_TYPES } from '@/lib/ecorota/content'
 import { UserProfileModal } from '@/components/user-profile-modal'
+import { WasteBinsInfographic } from '@/components/waste-bins-infographic'
 import dynamic from 'next/dynamic'
 
 const EcorotaMap = dynamic(
@@ -287,22 +288,14 @@ export function UserDashboard({ user }: UserDashboardProps) {
           </div>
         </div>
 
-        {/* Mapa */}
-        {/* Tipos de resíduo */}
-        <Card className="border-emerald-100 lg:col-span-2">
+        {/* Tipos de resíduo — infográfico */}
+        <Card className="border-emerald-100">
           <CardHeader>
             <CardTitle className="text-emerald-950">Tipos de resíduo</CardTitle>
             <CardDescription>Referência rápida para coleta seletiva em Joinville.</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {WASTE_TYPES.map((type) => (
-                <div key={type.name} className={`rounded-xl border p-4 ${type.color}`}>
-                  <p className="font-semibold text-sm">{type.name}</p>
-                  <p className="text-xs mt-1 opacity-80">{type.examples}</p>
-                </div>
-              ))}
-            </div>
+          <CardContent className="px-2 pb-4">
+            <WasteBinsInfographic />
           </CardContent>
         </Card>
       </main>
