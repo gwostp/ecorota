@@ -268,6 +268,8 @@ export function UserDashboard({ user }: UserDashboardProps) {
           </Card>
         </div>
 
+        <EcorotaMap />
+
         {/* Card WhatsApp em breve */}
         <div className="rounded-2xl border border-emerald-200 bg-gradient-to-r from-emerald-50 to-green-50 p-5 flex items-start gap-4">
           <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
@@ -286,8 +288,6 @@ export function UserDashboard({ user }: UserDashboardProps) {
         </div>
 
         {/* Mapa */}
-        <EcorotaMap />
-
         {/* Tipos de resíduo */}
         <Card className="border-emerald-100 lg:col-span-2">
           <CardHeader>
