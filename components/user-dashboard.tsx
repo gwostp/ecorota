@@ -271,6 +271,17 @@ export function UserDashboard({ user }: UserDashboardProps) {
 
         <EcorotaMap />
 
+        {/* Tipos de resíduo — infográfico */}
+        <Card className="border-emerald-100">
+          <CardHeader>
+            <CardTitle className="text-emerald-950">Tipos de resíduo</CardTitle>
+            <CardDescription>Referência rápida para coleta seletiva em Joinville.</CardDescription>
+          </CardHeader>
+          <CardContent className="px-2 pb-4">
+            <WasteBinsInfographic />
+          </CardContent>
+        </Card>
+
         {/* Card WhatsApp em breve */}
         <div className="rounded-2xl border border-emerald-200 bg-gradient-to-r from-emerald-50 to-green-50 p-5 flex items-start gap-4">
           <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
@@ -287,17 +298,6 @@ export function UserDashboard({ user }: UserDashboardProps) {
             </p>
           </div>
         </div>
-
-        {/* Tipos de resíduo — infográfico */}
-        <Card className="border-emerald-100">
-          <CardHeader>
-            <CardTitle className="text-emerald-950">Tipos de resíduo</CardTitle>
-            <CardDescription>Referência rápida para coleta seletiva em Joinville.</CardDescription>
-          </CardHeader>
-          <CardContent className="px-2 pb-4">
-            <WasteBinsInfographic />
-          </CardContent>
-        </Card>
       </main>
     </div>
   )
